@@ -25,11 +25,11 @@ function unhighlight(e) {
 	dropArea.classList.remove('highlight')
 }
 
-function preventDefaults (e) {
+function preventDefaults(e) {
 	e.preventDefault()
 	e.stopPropagation()
 }
-
+``
 function handleDrop(e) {
 	let dt = e.dataTransfer
 	let files = dt.files

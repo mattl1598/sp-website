@@ -1,3 +1,22 @@
+/* Landscape ish */
+@media (min-aspect-ratio: 3/2) {
+	div.post-content {
+		text-align: center;
+		width: 70%;
+		font-size: 110%;
+		background-color: #3CB5B9;
+	}
+}
+
+/* Portrait ish */
+@media (max-aspect-ratio: 3/2) {
+	div.post-content {
+		text-align: center;
+		width: 100%;
+		font-size: 110%;
+	}
+}
+
 div.top-bar {
 	display: grid;
 	grid-auto-flow: row;
@@ -34,8 +53,6 @@ h1.post-title {
 	text-align: center;
 }
 
-div.post-content {
-	text-align: center;
-	width: 70%;
-	font-size: 110%;
+ul {
+	text-align: left;
 }

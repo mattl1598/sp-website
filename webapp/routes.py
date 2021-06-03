@@ -28,6 +28,8 @@ def blog():
 		else:
 			post = BlogPost.query.filter_by(id=request.args.get("post")).first_or_404()
 		author = User.query.filter_by(id=post.author).first()
+		post.views += 1
+		db.session.commit()
 		return render_template(
 			"post.html",
 			post=post,
