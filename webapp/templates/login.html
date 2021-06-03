@@ -1,9 +1,9 @@
-{% extends "layout.html" %}
+{% extends "blank_layout.html" %}
 {% block content %}
 	<div class="login-tabs" id="login-tabs">
 		<div class="tab">
-		  <button class="tab_links" onclick="openTab(event, 'login')" id="{% if signup_q_key=='' %}defaultOpen{% else %}defaultClosed{% endif %}">Login</button>
-		  <button class="tab_links" onclick="openTab(event, 'register')" id="{% if signup_q_key!='' %}defaultOpen{% else %}defaultClosed{% endif %}">Register</button>
+		  <button class="tab_links" onclick="openTab(event, 'login')" id="{% if signup_key=='' %}defaultOpen{% else %}defaultClosed{% endif %}">Login</button>
+		  <button class="tab_links" onclick="openTab(event, 'register')" id="{% if signup_key!='' %}defaultOpen{% else %}defaultClosed{% endif %}">Register</button>
 		</div>
 
 		<!-- Tab content -->
@@ -13,8 +13,8 @@
 					{{ login.csrf_token }}
 					<br>
 					{{ login.spl_form_type(value='login') }}
-					{{ login.spl_email(placeholder="Email or Username", class="field") }}
-					{{ login.spl_password(placeholder="Password", class="field") }}
+					{{ login.spl_email(placeholder="Email or Username", class="field", autocomplete="section-login email username") }}
+					{{ login.spl_password(placeholder="Password", class="field", autocomplete="section-login current-password") }}
 					{{ login.spl_submit(class="butt") }}
 					<br>
 				</form>
@@ -22,21 +22,22 @@
 
 			<div id="register" class="tabcontent">
 				<form method="POST" action="">
-					{{ register.spr_signup_key(value=signup_q_key, class="field") }}
+					{{ register.spr_signup_key(value=signup_key, class="field") }}
 					{{ register.spr_csrf_token }}
 					{{ register.spr_form_type(value='register') }}
 					<hr/>
-					{{ register.spr_firstname(class="field") }}
-					{{ register.spr_lastname(class="field") }}
+					{{ register.spr_firstname(class="field", autocomplete="section-register given-name") }}
+					{{ register.spr_lastname(class="field", autocomplete="section-register family-name") }}
 					<hr/>
-					{{ register.spr_username(class="field") }}
-					{{ register.spr_email(class="field") }}
+					{{ register.spr_username(class="field", autocomplete="section-register username") }}
+					{{ register.spr_email(class="field", autocomplete="section-register email") }}
 					<hr/>
-					{{ register.spr_password(class="field") }}
-					{{ register.spr_confirm_password(class="field") }}
+					{{ register.spr_password(class="field", autocomplete="section-register new-password") }}
+					{{ register.spr_confirm_password(class="field", autocomplete="section-register new-password") }}
 					{{ register.spr_submit(class="butt") }}
 				</form>
 			</div>
 		</div>
 	</div>
+	<script>loaded()</script>
 {% endblock content %}

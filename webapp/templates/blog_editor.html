@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="flex-container">
+	<div class="top-bar">
+		<div class="svg-button" onclick="fadePage();location.href='/manage_blog';">
+			<svg viewBox="0 0 10 20" fill-opacity="0">
+				<path d="m 10 0 l -10 10 l 10 10"></path>
+			</svg>
+			<div class="label">
+				<h3>Back</h3>
+				<p>to all posts</p>
+			</div>
+		</div>
+		<h1 class="post-title">Post Editor</h1>
+		<div class="svg-button right" onclick="showPopUp();">
+			<svg viewBox="0 0 20 20" >
+				<circle cx="10" cy="10" r="9" stroke-width="1.5" fill-opacity="0"></circle>
+				<text x="0" y="0" stroke-width="0">?</text>
+			</svg>
+			<div class="label">
+				<h3>Help</h3>
+				<p>Editor Info</p>
+			</div>
+		</div>
+	</div>
+
+	<form class="blog-editor">
+		<span class="top-inputs">
+			<input type="text" placeholder="Title" name="title" id="title" value="{{ post.title }}">
+			<label class="publish" for="publish"><div class="publish">Publish: </div><input id="publish" name="publish" class="date" type="datetime-local" value=""></label>
+			{% if isNew %}
+				<button type="button" id="save" onclick="save_blog()">Save</button>
+			{% endif %}
+{#				<label for="autosave" id="autosave-label">Auto-Save <input type="checkbox" name="autosave" id="autosave" disabled checked></label>#}
+		</span>
+		<span class="blog_content">
+			<textarea name="content" id="raw_content">{{ post.content }}</textarea>
+			<div id="rendered_content"></div>
+		</span>
+
+		<script>
+			{#const autosave = document.getElementById("autosave");#}
+			const date = document.getElementById("publish");
+			date.value = utcToLocale("{{ post.date.strftime('%Y-%m-%dT%H:%M') }}");
+
+			const id = "{{ post.id }}";
+			const user_id = "{{ current_user.id }}";
+			const title = document.getElementById("title");
+
+			const raw = document.getElementById("raw_content");
+			const rendered = document.getElementById("rendered_content");
+			document.getElementById("raw_content").addEventListener("input", update_markdown)
+			update_markdown();
+		</script>
+	</form>
+</div>
+<div class="blurred hidden" id="popup-outer">
+	<div class="popup-bg">
+		<div class="popup_content">
+			<svg viewBox="0 0 20 20" class="popup_close" onclick="hidePopUp();">
+				{{ svg("x") | safe }}
+			</svg>
+			<div id="info-section">
+				<h1>Editor Help</h1>
+				<h2>About the Editor</h2>
+				<p>
+					This editor uses Markdown formatting which is a way of styling a document with simple syntax.
+					In the editor, you type text and markdown formatting into the input field on the left and the
+					resulting formatted text will be shown in real time in the panel on the right.
+				</p>
+				<h2>Basic Formatting</h2>
+				<table class="markdown-help">
+					<thead>
+						<th>Type</th><th>Example Markdown</th><th>Example Output</th>
+					</thead>
+					<tr>
+						<td>Italic Text</td>
+						<td><code>*This text will be italic*</code></td>
+						<td><i>This text will be italic</i></td>
+					</tr>
+					<tr>
+						<td>Bold Text</td>
+						<td><code>**This text will be bold**</code></td>
+						<td><b>This text will be bold</b></td>
+					</tr>
+					<tr>
+						<td>Bold & Italic Text</td>
+						<td><code>***Some very important text***</code></td>
+						<td><b><i>Some very important text</i></b></td>
+					</tr>
+					<tr>
+						<td>Links</td>
+						<td><code>[This is a link to Google](https://google.co.uk)</code></td>
+						<td><a href="https://google.co.uk">This is a link to Google</a></td>
+					</tr>
+					<tr>
+						<td>Images</td>
+						<td><code>![Alt Text](/blog_img/sitewide/0)</code></td>
+						<td><img alt="Alt Text" src="/blog_img/sitewide/0"></td>
+					</tr>
+				</table>
+				<h4><a href="/feedback">If you still have any questions or issues, submit a feedback item here.</a></h4>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock content %}

@@ -1,1 +1,7 @@
-<h1>test</h1>
+{% extends "layout.html" %}
+{% block content %}
+	<h1>test</h1>
+	{{ current_user.role }}
+	<br>
+	{{ current_user.active_features }}
+{% endblock content %}

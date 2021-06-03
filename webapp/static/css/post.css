@@ -1,0 +1,41 @@
+div.top-bar {
+	display: grid;
+	grid-auto-flow: row;
+	grid-template-columns: 1fr 3fr 1fr;
+	/*flex-direction: row;*/
+	/*align-items: center;*/
+	/*justify-content: space-between;*/
+	/*align-self: center;*/
+	/*align-content: center;*/
+	/*flex-wrap: nowrap;*/
+	width: 100%;
+}
+
+.top-bar h1 {
+	margin: auto;
+	flex-basis: auto;
+	/*flex-grow: 1;*/
+	/*justify-self: center;*/
+}
+
+.top-bar h2 {
+	margin: auto 0;
+	/*flex-grow: 1;*/
+	text-align: right;
+	flex-basis: auto;
+	justify-self: flex-end;
+}
+
+h1.post-title {
+	text-align: center;
+}
+
+.post-details {
+	text-align: center;
+}
+
+div.post-content {
+	text-align: center;
+	width: 70%;
+	font-size: 110%;
+}

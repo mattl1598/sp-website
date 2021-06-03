@@ -10,25 +10,18 @@
 	<title>{{ title }}</title>
 
 	<!-- import site css -->
-	{% set css = ["layout.css", "page_fader.css"] + css %}
+	{% set css = ["layout.css"] + css %}
 	<!--suppress HtmlUnknownTarget -->
 	<link rel="stylesheet" type="text/css" href="/static?t=css&q={{ "+".join(css) }}">
 	<!-- import site javascript -->
-	{% set js = ["page_fader.js"] + js %}
+	{% set js = js + [] %}
 	<!--suppress HtmlUnknownTarget -->
 	<script type="text/javascript" src="/static?t=js&q={{ "+".join(js) }}"></script>
 </head>
-<body id="body" onload="fadePage()">
-	<div class="navbar">
-		{% for item in nav[current_user.id] %}
-			<button {{ 'id=active' if item.is_active }} onclick="fadePage();window.location.href='{{ item.url }}';">
-				{{ item.label }}
-			</button>
-		{% endfor %}
-	</div>
-	<div class="content fade-out" id="content">
-		{% block content %}
-		{% endblock %}
+<body id="body">
+	<div class="content">
+	{% block content %}
+	{% endblock %}
 	</div>
 </body>
 </html>

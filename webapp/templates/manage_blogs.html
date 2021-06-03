@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block content %}
+	<div class="flex-container">
+		<div class="create-post">
+			<h1>Create a new post:</h1>
+			<div class="buttons">
+				<button id="from-word" onclick="showPopUp();"> From Word Doc </button>
+				<button id="from-scratch" onclick="fadePage();location.href='/manage_blog/editor?new'"> From Scratch </button>
+			</div>
+		</div>
+		<div class="your-posts">
+			<h1>Your Posts</h1>
+			<hr/>
+				{% for post in posts %}
+					<div class="link" onclick="fadePage();location.href='/manage_blog/editor?post={{ post.id }}';">
+	{#					{{ post.date.strftime("%d/%m/%Y") }} |#}
+						<span>
+							<b>{{ post.title }}</b>
+							 by {{ post.user.firstname }} {{ post.user.lastname }}
+						</span>
+						<span class="views">
+							{{ post.views }}
+							<svg viewBox="0 0 8 8">{{ svg("eye") | safe }}</svg>
+						</span>
+					</div>
+					<hr/>
+				{% endfor %}
+		</div>
+	</div>
+
+	<div class="blurred hidden" id="popup-outer">
+		<div class="popup-bg">
+			<div class="popup_content">
+				<svg viewBox="0 0 20 20" class="popup_close" onclick="hidePopUp();">
+					{{ svg("x") | safe }}
+				</svg>
+				<form action="" id="dropArea">
+					<div>
+						<h1>Drop File Here</h1>
+						<label for="fileElem"><u>or click to select</u></label>
+					</div>
+					<div id="file_preview" class="hidden_flex">
+						<img width="15%" src="/static?t=img&q=word_doc.jpg" alt="word doc icon">
+						<p id="filename"></p>
+						<button class="upload_button" id="from-word" type="button" onclick="upload_click();">Upload</button>
+					</div>
+					<input class="hidden_flex" type="file" name="fileElem" id="fileElem" onchange="fileSelected(this.files[0]);">
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock content %}

@@ -1,0 +1,31 @@
+{% extends "blank_layout.html" %}
+{% block content %}
+<div class="flex-container">
+	<div class="top-bar">
+		<div class="svg-button" onclick="location.href='/blog';">
+			<svg viewBox="0 0 10 20" fill-opacity="0">
+				<path d="m 10 0 l -10 10 l 10 10"></path>
+			</svg>
+			<div class="label">
+				<h3>Back</h3>
+				<p>to all posts</p>
+			</div>
+		</div>
+		<h1 class="post-title">{{ post.title }}</h1>
+		<div style="text-align: right; margin: auto;">
+			<h2>{{ post.date.strftime("%b %Y") }}</h2>
+			by {{ author.firstname }} {{ author.lastname }}
+		</div>
+
+	</div>
+{#	<hr>#}
+{#	<h3 class="post-details">#}
+{#		{{ post.date.strftime("%d/%m/%Y") }}#}
+{##}
+{#	</h3>#}
+{#	<hr>#}
+	<div class="post-content">
+		{{ md(post.content) | safe }}
+	</div>
+</div>
+{% endblock content %}

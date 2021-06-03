@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block content %}
+	<form method="POST" action="">
+		{% for field in invite_form %}
+{#			{% if field.type != "CSRFTokenField" %}#}
+				{{ field | safe }}
+				{% if field.type in ["BooleanField"] %}
+					{{ field.label | safe }}
+				{% endif %}
+
+{#			{% endif %}#}
+			<br>
+		{% endfor %}
+	</form>
+{% endblock content %}
