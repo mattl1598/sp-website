@@ -1,9 +1,8 @@
-name: remote ssh command
+name: deploy updated code
 on: [push]
 jobs:
-
-  build:
-    name: Build
+  deploy:
+    name: Deploy
     runs-on: ubuntu-latest
     steps:
     - name: executing remote ssh commands using password
@@ -13,4 +12,4 @@ jobs:
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
-        script: bash test.sh
+        script: bash ./action/sp-website.sh
