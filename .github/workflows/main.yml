@@ -12,4 +12,4 @@ jobs:
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
-        script: bash ./action/sp-website.sh
+        script: bash actions/sp-website.sh
