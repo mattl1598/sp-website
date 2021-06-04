@@ -11,7 +11,7 @@ from flask_navigation import Navigation
 app = Flask(__name__)
 
 app.root = os.getcwd()
-app.envs = corha.credentials_loader(app.root + "\\.env")
+app.envs = corha.credentials_loader(app.root + "/.env")
 
 app.static_content_cache = {"js": {}, "css": {}}
 
