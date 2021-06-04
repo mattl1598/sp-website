@@ -12,4 +12,4 @@ jobs:
         key: ${ { secrets.SSH_KEY } }
         known_hosts: ${ { secrets.KNOWN_HOSTS } }        
     - name: Execute test Script
-      run: ssh ${{ secrets.USERNAME }}@${ { secrets.SERVER } } bash test.sh
+      run: ssh ${{ secrets.USERNAME }}@${{ secrets.SERVER }} bash test.sh
