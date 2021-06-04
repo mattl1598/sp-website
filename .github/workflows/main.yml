@@ -1,15 +1,16 @@
-name: CI Script
+name: remote ssh command
 on: [push]
-
 jobs:
-  # Deploy Process
-  deploy:
-    runs-on: ubuntu-18.04
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
     steps:
-    - name: Install SSH Key
-      uses: shimataro/ssh-key-action@v2.1.0
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@master
       with:
-        key: ${ { secrets.SSH_KEY } }
-        known_hosts: ${ { secrets.KNOWN_HOSTS } }        
-    - name: Execute test Script
-      run: ssh ${{ secrets.USERNAME }}@${{ secrets.SERVER }} bash test.sh
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        run: bash test.sh
