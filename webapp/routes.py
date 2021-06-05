@@ -205,6 +205,13 @@ def handle_join(data):
 
 
 @login_required
+@app.route("/feedback", methods=["GET", "POST"])
+def feedback():
+	print(request.referrer)
+	return render_template("feedback.html", css=[], js=[])
+
+
+@login_required
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
 	invite_form = InviteForm()
