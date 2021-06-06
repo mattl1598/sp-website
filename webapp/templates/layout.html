@@ -9,6 +9,12 @@
 
 	<title>{{ title }}</title>
 
+    {% if external_js is defined %}
+        {% for url in external_js %}
+            <script type="text/javascript" src="{{ url }}"></script>
+        {% endfor %}
+    {% endif %}
+
 	<!-- import site css -->
 	{% set css = ["layout.css", "page_fader.css"] + css %}
 	<!--suppress HtmlUnknownTarget -->
