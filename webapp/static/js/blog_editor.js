@@ -22,13 +22,12 @@ function update_markdown() {
 	let data = {
 		user_id: user_id,
 		id: id,
+		date: localeToUTC(date.value),
 		title: title.value,
 	    content: raw.value
 	}
-
-	socket.emit('edit', data)
-
 	rendered.innerHTML = marked(raw.value);
+	socket.emit('edit', data)
 }
 
 socket.on('updated', function (data) {

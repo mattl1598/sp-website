@@ -140,7 +140,8 @@ def upload_blog():
 @login_required
 def blog_editor():
 	if current_user.is_authenticated:
-		js = ["popup.js", "marked.js"]
+		js = ["popup.js"]
+		external_js = ["https://cdnjs.cloudflare.com/ajax/libs/marked/2.0.3/marked.min.js"]
 		is_new = False
 		if "new" in request.args.keys():
 			is_new = True
@@ -154,14 +155,19 @@ def blog_editor():
 			js = [*js, "newblog_editor.js"]
 		else:
 			post = BlogPost.query.filter_by(id=request.args.get("post")).first_or_404()
-			js = [*js, "socket.io.min.js", "blog_editor.js"]
+			js = [*js, "blog_editor.js"]
+			external_js = [
+				*external_js,
+				"https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"
+			]
 		return render_template(
 			"blog_editor.html",
 			post=post,
 			isNew=is_new,
 			user=current_user,
 			css=["popup.css", "blog_editor.css", "back.css"],
-			js=js
+			js=js,
+			external_js=external_js
 		)
 	else:
 		return redirect(url_for("login"))
@@ -199,6 +205,7 @@ def update_blog(data):
 	post = BlogPost.query.filter_by(id=data["id"]).first_or_404()
 	post.title = data["title"]
 	post.content = data["content"]
+	post.date = datetime.fromisoformat(data["date"])
 	db.session.commit()
 	emit('updated', data, broadcast=True, to=data["id"])
 
