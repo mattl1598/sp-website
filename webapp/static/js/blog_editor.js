@@ -1,4 +1,4 @@
-const socket = io("/manage_blog/edit");
+const socket = io("/manage_blog/edit", { transports: ["websocket"] });
 
 socket.on('connect', function() {
     socket.emit('join', {"room": id, "user_id": user_id})
