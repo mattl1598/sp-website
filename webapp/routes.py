@@ -69,19 +69,24 @@ def manage_blog():
 @app.post("/manage_blog/upload")
 @login_required
 def upload_blog():
-	print(request.files.get('file').filename.rstrip(".docx"))
 	used_ids = [value[0] for value in BlogPost.query.with_entities(BlogPost.id).all()]
 	blog_id = corha.rand_string(datetime.utcnow().isoformat(), 16, used_ids)
 
 	def convert_image(image, id=blog_id):
 		img_count = BlogImage.query.filter_by(blog_id=id).count()
+		sp_logo = BlogImage.query.get(("sitewide", 0)).image
+		b = io.BytesIO()
 		with image.open() as image_bytes:
 			pil_image = Image.open(image_bytes, "r", None)
 			pil_image = pil_image.convert('RGB')
-			b = io.BytesIO()
 			pil_image.save(b, "JPEG")
 			b.seek(0)
 
+		if b.read() == sp_logo:
+			id = "sitewide"
+			img_count = 0
+		else:
+			b.seek(0)
 			new_img = BlogImage(
 				blog_id=id,
 				image_no=img_count,
@@ -91,7 +96,6 @@ def upload_blog():
 			db.session.commit()
 
 		return {
-			"title": f"image_{img_count}.jpg",
 			"src": f"/blog_img/{id}/{img_count}"
 		}
 
@@ -184,7 +188,10 @@ def blog_save():
 @app.get("/blog_img/<blog_id>/<int:image_no>")
 def blog_img(blog_id, image_no):
 	img = BlogImage.query.get((blog_id, image_no)).image
-	return make_response(img)
+	if img is not None:
+		return make_response(img)
+	else:
+		abort(404)
 
 
 @socketio.on('edit', namespace="/manage_blog/edit")
