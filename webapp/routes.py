@@ -111,7 +111,9 @@ def upload_blog():
 	markdown = markdown.replace("\\.", ".")\
 		.replace("\\(", "(")\
 		.replace("\\)", ")")\
-		.replace("\\!", "!")
+		.replace("\\!", "!")\
+		.replace("\\-", "-")\
+		.replace("\\_", "_")
 	# force https links
 	markdown = markdown.replace("](http://", "](https://")
 	# remove initial hr element

@@ -13,13 +13,15 @@
 			<hr/>
 				{% for post in posts %}
 					<div class="link" onclick="fadePage();location.href='/manage_blog/editor?post={{ post.id }}';">
-	{#					{{ post.date.strftime("%d/%m/%Y") }} |#}
 						<span>
 							<b>{{ post.title }}</b>
 							 by {{ post.user.firstname }} {{ post.user.lastname }}
 						</span>
+
 						<span class="views">
-							{{ post.views }}
+                            {{ post.date.strftime("%b %Y") }}
+                            <span class="sep"></span>
+							<b>{{ post.views }}</b>
 							<svg viewBox="0 0 8 8">{{ svg("eye") | safe }}</svg>
 						</span>
 					</div>

@@ -63,6 +63,10 @@ button#from-word {
     border-radius: 10px;
 }
 
+.sep {
+    padding-left: 2em;
+}
+
 .views {
     display: inline;
     float: right;

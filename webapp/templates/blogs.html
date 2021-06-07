@@ -6,9 +6,8 @@
 		<hr/>
 		{% for post in posts %}
 			<div class="link" onclick="location.href='/blog?post={{ post.id }}';">
-				{{ post.title }}
+                <b>{{ post.title }}</b>
 				 -
-{#				{{ post.date.strftime("%d %b %Y") }}#}
 				{{ post.date.strftime("%b %Y") }}
 				 -
 				by {{ post.user.firstname }} {{ post.user.lastname }}
