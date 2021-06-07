@@ -7,7 +7,7 @@ from flask_login import UserMixin
 
 class User(UserMixin, db.Model):
 	id = db.Column(db.String(16), primary_key=True)
-	username = db.Column(db.String(15), unique=True)
+	username = db.Column(db.String(20), unique=True)
 	firstname = db.Column(db.String(20))
 	lastname = db.Column(db.String(30))
 	email = db.Column(db.String(120), unique=True)
@@ -48,7 +48,6 @@ class BlogPost(db.Model):
 	content = db.Column(db.Text, nullable=False)
 	author = db.Column(db.String(40), db.ForeignKey('user.id'))
 	views = db.Column(db.Integer, default=0)
-	# db.relationship("Round", backref='league')
 
 	def __repr__(self):
 		return f"BlogPost('{self.id}', '{self.date}', '{self.title}', '{self.category}', '{self.content}', '{self.author}')"

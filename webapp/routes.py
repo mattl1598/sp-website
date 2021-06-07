@@ -245,7 +245,7 @@ def admin():
 				"valid": True,
 				"role": "author",
 				"place_holder": user_id if invite_form.invite_make_placeholder.data else "",
-				"active_features": [],
+				"active_features": ["manage_blog"],
 				"homepage_order": {}
 			}
 			new_invite = Invite(**invite_kwargs)
