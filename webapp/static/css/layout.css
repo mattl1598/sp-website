@@ -36,6 +36,8 @@
 .navbar button:hover {
 	background-color: #999;
 	border-bottom: var(--sp-accent) 3px solid;
+	/*padding-top: 11px;*/
+	padding-bottom: 12px;
 }
 
 .navbar button#active {
@@ -43,6 +45,7 @@
 	border-bottom: var(--sp-accent) 3px solid;
 	font-weight: bolder;
 	text-decoration: underline;
+	padding-bottom: 12px;
 }
 
 .content {
