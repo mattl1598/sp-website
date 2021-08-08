@@ -5,6 +5,15 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
 
+class Feedback(db.Model):
+	id = db.Column(db.String(16), primary_key=True)
+	referrer = db.Column(db.Text)
+	subject = db.Column(db.Text, nullable=False)
+	body = db.Column(db.Text, nullable=False)
+	date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
+	author = db.Column(db.String(16), db.ForeignKey('user.id'))
+
+
 class User(UserMixin, db.Model):
 	id = db.Column(db.String(16), primary_key=True)
 	username = db.Column(db.String(20), unique=True)
@@ -17,6 +26,7 @@ class User(UserMixin, db.Model):
 	active_features = db.Column(db.PickleType, default=[])
 	homepage_order = db.Column(db.PickleType, default={})
 	post = db.relationship('BlogPost', backref='user', lazy=True)
+	feedback = db.relationship('Feedback', backref='user', lazy=True)
 
 	def __init__(self, **kwargs):
 		super(User, self).__init__(**kwargs)

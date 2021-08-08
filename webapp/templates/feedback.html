@@ -1,5 +1,15 @@
 {% extends "layout.html" %}
 {% block content %}
+    <div class="flex-container">
     <h1>Feedback</h1>
-    {{ request.referrer }}
+    <form method="POST" action="">
+		{% for field in form %}
+				{{ field | safe }}
+				{% if field.type in ["BooleanField"] %}
+					{{ field.label | safe }}
+				{% endif %}
+		{% endfor %}
+	</form>
+    {{ ref_end }}
+    </div>
 {% endblock content %}

@@ -1,6 +1,28 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, HiddenField, FileField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, HiddenField, FileField, BooleanField, TextAreaField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, Regexp
+
+
+class FeedbackForm(FlaskForm):
+	referrer_page = HiddenField(
+		'referrer_page',
+		validators=[]
+	)
+	subject = StringField(
+		'Issue Subject',
+		render_kw={
+			"placeholder": "Issue Subject"
+		},
+		validators=[]
+	)
+	issue_body = TextAreaField(
+		'Issue Body',
+		render_kw={
+			"placeholder": "Issue Body"
+		},
+		validators=[]
+	)
+	submit = SubmitField('Submit')
 
 
 class InviteForm(FlaskForm):
@@ -71,9 +93,10 @@ class Register(FlaskForm):
 		}
 	)
 	spr_username = StringField(
-		'Username*', validators=[DataRequired(), Length(min=3, max=15)],
+		'Username*', validators=[DataRequired(), Length(min=3, max=20)],
 		render_kw={
-			"placeholder": "Username"
+			"placeholder": "Username",
+			"max": 20
 		}
 	)
 	spr_email = StringField(

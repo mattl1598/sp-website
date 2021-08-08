@@ -3,8 +3,8 @@ import dotmap
 from webapp import app, db, socketio
 from flask import request, make_response, abort, render_template, redirect, url_for, session, send_file
 from flask_login import login_user, logout_user, current_user, login_required
-from webapp.forms import LoginForm, Register, InviteForm
-from webapp.models import User, Invite, BlogPost, BlogImage
+from webapp.forms import LoginForm, Register, InviteForm, FeedbackForm
+from webapp.models import User, Invite, BlogPost, BlogImage, Feedback
 from datetime import datetime
 from flask_socketio import emit, join_room
 from webapp.navbar import gen_nav
@@ -223,8 +223,29 @@ def handle_join(data):
 @login_required
 @app.route("/feedback", methods=["GET", "POST"])
 def feedback():
-	print(request.referrer)
-	return render_template("feedback.html", css=[], js=[])
+	referrer_endpoint = "/" + request.referrer.replace(request.url_root, "")
+	form = FeedbackForm()
+	if request.method == "POST":
+		now = datetime.utcnow()
+		used_ids = [value[0] for value in Feedback.query.with_entities(Feedback.id).all()]
+		new_issue = Feedback(
+			id=corha.rand_string(str(now), 16, used_ids),
+			referrer=form.referrer_page.data,
+			subject=form.subject.data,
+			body=form.issue_body.data,
+			author=current_user.id
+		)
+		db.session.add(new_issue)
+		db.session.commit()
+		return redirect(form.referrer_page.data)
+	else:
+		form.referrer_page.data = referrer_endpoint
+		return render_template(
+			"feedback.html",
+			form=form,
+			ref_end=referrer_endpoint,
+			css=["feedback.css"], js=[]
+		)
 
 
 @login_required
