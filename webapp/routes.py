@@ -1,10 +1,12 @@
+from pprint import pprint
 import corha.corha as corha
 import dotmap
-from webapp import app, db, socketio
-from flask import request, make_response, abort, render_template, redirect, url_for, session, send_file
+from webapp import app, db, socketio, debug
+from flask import request, make_response, abort, render_template, redirect, url_for, session, send_file, \
+	send_from_directory
 from flask_login import login_user, logout_user, current_user, login_required
 from webapp.forms import LoginForm, Register, InviteForm, FeedbackForm
-from webapp.models import User, Invite, BlogPost, BlogImage, Feedback
+from webapp.models import User, Invite, BlogPost, BlogImage, Feedback, Show
 from datetime import datetime
 from flask_socketio import emit, join_room
 from webapp.navbar import gen_nav
@@ -20,204 +22,16 @@ def before_request():
 		gen_nav()
 
 
-@app.get("/blog")
-def blog():
-	if request.args:
-		if "latest" in request.args.keys():
-			post = BlogPost.query.order_by(BlogPost.date.desc()).first()
-		else:
-			post = BlogPost.query.filter_by(id=request.args.get("post")).first_or_404()
-		author = User.query.filter_by(id=post.author).first()
-		post.views += 1
-		db.session.commit()
-		return render_template(
-			"post.html",
-			post=post,
-			author=author,
-			css=["back.css", "post.css"],
-			js=[]
-		)
-	else:
-		posts = BlogPost.query.order_by(BlogPost.date.desc()).all()
-		return render_template(
-			"blogs.html",
-			posts=posts,
-			css=["blogs.css"],
-			js=[]
-		)
-
-
-@app.get("/manage_blog")
-@login_required
-def manage_blog():
-	if current_user.is_authenticated:
-		posts = []
-		if current_user.role == "author":
-			posts = BlogPost.query.filter_by(author=current_user.id).order_by(BlogPost.date.desc()).all()
-		elif current_user.role == "admin":
-			posts = BlogPost.query.order_by(BlogPost.date.desc()).all()
-		return render_template(
-			"manage_blogs.html",
-			posts=posts,
-			css=["popup.css", "blog_manager.css"],
-			js=["popup.js", "blog_manager.js"]
-		)
-	else:
-		return redirect(url_for("login"))
-
-
-@app.post("/manage_blog/upload")
-@login_required
-def upload_blog():
-	used_ids = [value[0] for value in BlogPost.query.with_entities(BlogPost.id).all()]
-	blog_id = corha.rand_string(datetime.utcnow().isoformat(), 16, used_ids)
-
-	def convert_image(image, id=blog_id):
-		img_count = BlogImage.query.filter_by(blog_id=id).count()
-		sp_logo = BlogImage.query.get(("sitewide", 0)).image
-		b = io.BytesIO()
-		with image.open() as image_bytes:
-			pil_image = Image.open(image_bytes, "r", None)
-			pil_image = pil_image.convert('RGB')
-			pil_image.save(b, "JPEG")
-			b.seek(0)
-
-		if b.read() == sp_logo:
-			id = "sitewide"
-			img_count = 0
-		else:
-			b.seek(0)
-			new_img = BlogImage(
-				blog_id=id,
-				image_no=img_count,
-				image=b.read()
-			)
-			db.session.add(new_img)
-			db.session.commit()
-
-		return {
-			"src": f"/blog_img/{id}/{img_count}"
-		}
-
-	result = mammoth.convert_to_markdown(
-		request.files.get('file'),
-		convert_image=mammoth.images.img_element(convert_image))
-
-	# modify markdown to match github style
-
-	# use ** to denote bold text rather than __
-	markdown = result.value.replace("__", "**")
-	# remove unnecessary character escaping
-	markdown = markdown.replace("\\.", ".")\
-		.replace("\\(", "(")\
-		.replace("\\)", ")")\
-		.replace("\\!", "!")\
-		.replace("\\-", "-")\
-		.replace("\\_", "_")
-	# force https links
-	markdown = markdown.replace("](http://", "](https://")
-	# remove initial hr element
-	markdown = markdown.replace("*** ***", "")
-
-	for i in range(len(markdown)):
-		if markdown[i] not in [" ", "\n"]:
-			markdown = markdown[i:]
-			break
-
-	post = BlogPost(**{
-		"id": blog_id,
-		"date": datetime.utcnow(),
-		"title": request.files.get('file').filename.rstrip(".docx"),
-		"content": markdown,
-		"category": "blogpost",
-		"author": current_user.id,
-		"views": 0
-	})
-	db.session.add(post)
-	db.session.commit()
-	return make_response(blog_id, 200)
-
-
-@app.get("/manage_blog/editor")
-@login_required
-def blog_editor():
-	if current_user.is_authenticated:
-		js = ["popup.js"]
-		external_js = ["https://cdnjs.cloudflare.com/ajax/libs/marked/2.0.3/marked.min.js"]
-		is_new = False
-		if "new" in request.args.keys():
-			is_new = True
-			used_ids = [value[0] for value in BlogPost.query.with_entities(BlogPost.id).all()]
-			post = dotmap.DotMap({
-				"id": corha.rand_string(datetime.utcnow().isoformat(), 16, used_ids),
-				"date": datetime.utcnow(),
-				"title": "",
-				"content": ""
-			})
-			js = [*js, "newblog_editor.js"]
-		else:
-			post = BlogPost.query.filter_by(id=request.args.get("post")).first_or_404()
-			js = [*js, "blog_editor.js"]
-			external_js = [
-				*external_js,
-				"https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"
-			]
-		return render_template(
-			"blog_editor.html",
-			post=post,
-			isNew=is_new,
-			user=current_user,
-			css=["popup.css", "blog_editor.css", "back.css"],
-			js=js,
-			external_js=external_js
-		)
-	else:
-		return redirect(url_for("login"))
-
-
-@app.post("/blog_save")
-def blog_save():
-	used_ids = [value[0] for value in BlogPost.query.with_entities(BlogPost.id).all()]
-	kwargs = {
-		"id": corha.rand_string(datetime.utcnow().isoformat(), 16, used_ids),
-		"title":  request.json["title"],
-		"content": request.json["content"],
-		"category": "blogpost",
-		"author": request.json["author"],
-		"date": datetime.utcnow()
-	}
-	new_post = BlogPost(**kwargs)
-	db.session.add(new_post)
-	db.session.commit()
-	response = kwargs["id"]
-	return response
-
-
-@app.get("/blog_img/<blog_id>/<int:image_no>")
-def blog_img(blog_id, image_no):
-	img = BlogImage.query.get((blog_id, image_no)).image
-	if img is not None:
-		return make_response(img)
-	else:
+@app.get("/sounds/<filename>")
+def sound(filename):
+	print(filename)
+	if filename not in app.available_sounds:
+		debug("not found")
 		abort(404)
-
-
-@socketio.on('edit', namespace="/manage_blog/edit")
-def update_blog(data):
-	post = BlogPost.query.filter_by(id=data["id"]).first_or_404()
-	post.title = data["title"]
-	post.content = data["content"]
-	post.date = datetime.fromisoformat(data["date"])
-	db.session.commit()
-	emit('updated', data, broadcast=True, to=data["id"])
-
-
-@socketio.on('join', namespace="/manage_blog/edit")
-def handle_join(data):
-	room = data["room"]
-	user_id = data["user_id"]
-	join_room(room)
-	print(f'{user_id} joined room "{room}"')
+	else:
+		debug("found")
+		response = send_from_directory(app.sounds_path, filename)
+		return response
 
 
 @login_required
@@ -244,7 +58,7 @@ def feedback():
 			"feedback.html",
 			form=form,
 			ref_end=referrer_endpoint,
-			css=["feedback.css"], js=[]
+			css="feedback.css", js=[]
 		)
 
 
@@ -291,8 +105,9 @@ def admin():
 	return render_template(
 		"admin.html",
 		invite_form=invite_form,
-		css=[],
-		js=[]
+		hosted_sounds=app.available_sounds,
+		css="admin.css",
+		js=["admin.js"]
 	)
 
 
@@ -314,8 +129,53 @@ def test():
 	# user = User.query.filter_by(id=current_user.id).first()
 	# user.active_features = ['manage_blog', 'test', 'admin']
 	# db.session.commit()
+	#
+	# cast = {
+	# 	"named": {
+	# 		"Martin Powell": ["hoqd7hpLMEhKLmUp"],
+	# 		"Detective Inspector Bruton": ["Bh87kEAHtE2E6BpL"],
+	# 		"Celia Wallis": ["MFr9Z1NbbV216bGa"],
+	# 		"Detective Sergeant Fisher": ["cu6br_Ml4GPs72No"],
+	# 		"WPC Leach": ["F-nKx-r96R2Ds2nR"],
+	# 		"Detective Constable Wilkins": ["sEA0mysoRAgiBJ3E"],
+	# 		"Neville Smallwood": ["mpxllfyccwYt3v-a"]
+	# 	},
+	# 	"grouped": {
+	#
+	# 	}
+	# }
+	#
+	# crew = {
+	# 	"Lighting": ["-xbPkjZ4cYTPeWpa"],
+	# 	"Sound": ["QSaOM3ZMlRpGXR3E"],
+	# 	"Stage Manager": ["sEA0mysoRAgiBJ3E"],
+	# 	"Prompt": ["2kfIhKOywfSZ2mgV"],
+	# 	"Wardrobe": ["PBgTI36I_LvDxdyr"],
+	# 	"Props": ["HxD5_T14h9bu1d6k"],
+	# 	"Set Design": ["PBgTI36I_LvDxdyr"],
+	# 	"Set Construction": ["-xbPkjZ4cYTPeWpa", "NvOFvgrGOmdpj9ck"],
+	# 	"Make-up": ["2kfIhKOywfSZ2mgV"],
+	# 	"Front of House": ["hYb3oyjFNimuFs4j"],
+	# 	"Ticket Sales": ["pWWJs9XBodLfz3BG"],
+	# 	"Poster/Programme Design": ["ftou71eM0KIYAyZ6"],
+	# 	"Publicity": ["mpxllfyccwYt3v-a", "HxD5_T14h9bu1d6k"]
+	# }
+	#
+	# new_show = Show(
+	# 	id="test_show",
+	# 	year=2015,
+	# 	season="Autumn",
+	# 	show_type="Show",
+	# 	title="Silhouette",
+	# 	subtitle="a Thriller By Simon Brett",
+	# 	cast_dict=cast,
+	# 	crew_dict=crew
+	# )
+	#
+	# db.session.add(new_show)
+	# db.session.commit()
 
-	return render_template("test.html", css=[], js=[])
+	return render_template("test.html", css="test.css", js=[])
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -388,7 +248,7 @@ def login():
 			login=login_form,
 			register=register_form,
 			signup_key=signup_key,
-			css=["login.css"],
+			css="login.css",
 			js=["login.js"]
 		)
 
@@ -408,16 +268,13 @@ def static_loader():
 
 		args:
 			t: type of file, either "js" or "css"
-
 			q: filenames of requested files in order, separated by "&" in the url
 
 		security: None required
-
 		responses:
 			200: returns the requested js or css files all concatenated together
 
 			404: error not found if the requested filetype is neither js or css
-
 	:authors:
 		- Matt
 	:returns: HTTP Response
@@ -430,7 +287,7 @@ def static_loader():
 	# load url args from request object
 	args = request.args
 	filetype = args["t"]
-	if filetype in ["js", "css"]:
+	if filetype == "js":
 		try:
 			# check the static content cache for the requested combination
 			output_blob = app.static_content_cache[filetype][args["q"]]
@@ -447,6 +304,31 @@ def static_loader():
 			# create http response from concatenated files
 			output_blob = "\n".join(output)
 
+		response = make_response(output_blob)
+		# set correct mimetype for response
+		response.mimetype = mimetype_lookup[filetype]
+		return response
+	elif filetype == "css":
+		files = request.args.to_dict(flat=False)['q'][0].split(" ")
+		output = []
+		for file in files:
+			# if file in app.available_css:
+			# 	if (content := app.static_content_cache[filetype].get(file)) is not None:
+			# 		output.append(content)
+			# 	else:
+			# 		with open(str(app.root + "/webapp/static/css/" + file), "r") as contents:
+			# 			output.append(contents.read())
+			# 			app.static_content_cache[filetype][file] = output[-1]
+			if (new_file := file[:-4] + ".scss") in app.available_scss:
+				if app.config["FLASK_ENV"] == "development":
+					with open(str(app.root + "/webapp/static/scss/" + new_file), "r") as contents:
+						output.append(app.scss_compiler.compile_string(contents.read()))
+				else:
+					output.append(app.static_content_cache[filetype].get(file))
+			else:
+				abort(404)
+
+		output_blob = "\n".join(output)
 		response = make_response(output_blob)
 		# set correct mimetype for response
 		response.mimetype = mimetype_lookup[filetype]

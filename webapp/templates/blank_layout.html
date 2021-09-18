@@ -10,9 +10,8 @@
 	<title>{{ title }}</title>
 
 	<!-- import site css -->
-	{% set css = ["layout.css"] + css %}
 	<!--suppress HtmlUnknownTarget -->
-	<link rel="stylesheet" type="text/css" href="/static?t=css&q={{ "+".join(css) }}">
+	<link rel="stylesheet" type="text/css" href="/static?t=css&q={{ css }}">
 	<!-- import site javascript -->
 	{% set js = js + [] %}
 	<!--suppress HtmlUnknownTarget -->

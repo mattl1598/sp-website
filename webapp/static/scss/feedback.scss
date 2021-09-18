@@ -1,0 +1,39 @@
+@import "partials/variables";
+@import "partials/navbar";
+@import "partials/layout";
+@import "partials/page_fader";
+
+form {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 60%;
+	text-align: center;
+	font-family: 'Poppins', sans-serif;
+
+	input, textarea, input[type="submit"] {
+		font-size: 105%;
+		border-radius: 5px;
+		margin: 1.5%;
+		border: 1px solid #3F403F;
+		width: 98%;
+		font-family: inherit;
+		padding: 0.5vh 1ch;
+	}
+
+	textarea {
+		resize: none;
+		min-height: 30vh;
+	}
+
+	input[type="submit"] {
+		font-weight: bold;
+		font-size: 110%;
+		border: 3px solid $sp-accent;
+		cursor: pointer;
+		background-color: $sp-accent;
+		color: #ffffff;
+		margin-left: 1%;
+		width: auto;
+	}
+}

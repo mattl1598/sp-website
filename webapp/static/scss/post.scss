@@ -1,3 +1,7 @@
+@import "partials/variables";
+@import "partials/layout";
+@import "partials/back_button";
+
 /* Landscape ish */
 @media (min-aspect-ratio: 3/2) {
 	div.post-content {
@@ -28,25 +32,25 @@ div.top-bar {
 	/*align-content: center;*/
 	/*flex-wrap: nowrap;*/
 	width: 100%;
-}
 
-.top-bar h1 {
-	margin: auto;
-	flex-basis: auto;
-	/*flex-grow: 1;*/
-	/*justify-self: center;*/
-}
+	h1 {
+		margin: auto;
+		flex-basis: auto;
+		/*flex-grow: 1;*/
+		/*justify-self: center;*/
 
-.top-bar h2 {
-	margin: auto 0;
-	/*flex-grow: 1;*/
-	text-align: right;
-	flex-basis: auto;
-	justify-self: flex-end;
-}
+		&.post-title {
+			text-align: center;
+		}
+	}
 
-h1.post-title {
-	text-align: center;
+	h2 {
+		margin: auto 0;
+		/*flex-grow: 1;*/
+		text-align: right;
+		flex-basis: auto;
+		justify-self: flex-end;
+	}
 }
 
 .post-details {

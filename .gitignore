@@ -131,3 +131,5 @@ dmypy.json
 
 # Pycharm settings
 .idea/
+
+*.mp3

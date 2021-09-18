@@ -15,10 +15,11 @@
         {% endfor %}
     {% endif %}
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 	<!-- import site css -->
-	{% set css = ["layout.css", "page_fader.css"] + css %}
 	<!--suppress HtmlUnknownTarget -->
-	<link rel="stylesheet" type="text/css" href="/static?t=css&q={{ "+".join(css) }}">
+	<link rel="stylesheet" type="text/css" href="/static?t=css&q={{ css }}">
 	<!-- import site javascript -->
 	{% set js = ["page_fader.js"] + js %}
 	<!--suppress HtmlUnknownTarget -->

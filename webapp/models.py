@@ -5,6 +5,51 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
 
+class Show(db.Model):
+	id = db.Column(db.String(16), primary_key=True)
+	year = db.Column(db.Integer)
+	season = db.Column(db.String(8))
+	show_type = db.Column(db.Text)
+	title = db.Column(db.Text)
+	subtitle = db.Column(db.Text)
+	genre = db.Column(db.Text)
+	author = db.Column(db.Text)
+	programme = db.Column(db.Text)
+	images_folder = db.Column(db.Text)
+	gallery_link = db.Column(db.Text)
+
+	member_show_link = db.relationship('MemberShowLink', backref='show', lazy=True)
+	show_photos = db.relationship('ShowPhotos', backref='show', lazy=True)
+
+
+class ShowPhotos(db.Model):
+	id = db.Column(db.String(16), primary_key=True)
+	show_id = db.Column(db.String(16), db.ForeignKey('show.id'))
+	photo_url = db.Column(db.Text)
+	photo_type = db.Column(db.String(30))
+	photo_desc = db.Column(db.Text)
+
+
+class MemberShowLink(db.Model):
+	id = db.Column(db.String(16), primary_key=True)
+	show_id = db.Column(db.String(16), db.ForeignKey('show.id'))
+	cast_or_crew = db.Column(db.String(16))
+	role_name = db.Column(db.Text)
+	member_id = db.Column(db.String(16), db.ForeignKey('member.id'))
+
+
+class Member(db.Model):
+	id = db.Column(db.String(16), primary_key=True)
+	firstname = db.Column(db.String(20))
+	lastname = db.Column(db.String(30))
+	associated_user = db.Column(db.String(16), db.ForeignKey('user.id'))
+
+	member_show_link = db.relationship('MemberShowLink', backref='member', lazy=True)
+
+	def __repr__(self):
+		return f"User(id='{self.id}', '{self.firstname}', '{self.lastname}', '{self.associated_user}')"
+
+
 class Feedback(db.Model):
 	id = db.Column(db.String(16), primary_key=True)
 	referrer = db.Column(db.Text)
@@ -27,6 +72,7 @@ class User(UserMixin, db.Model):
 	homepage_order = db.Column(db.PickleType, default={})
 	post = db.relationship('BlogPost', backref='user', lazy=True)
 	feedback = db.relationship('Feedback', backref='user', lazy=True)
+	member = db.relationship('Member', backref='user', lazy=True)
 
 	def __init__(self, **kwargs):
 		super(User, self).__init__(**kwargs)

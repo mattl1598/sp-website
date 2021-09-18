@@ -1,0 +1,106 @@
+@import "partials/variables";
+@import "partials/navbar";
+@import "partials/layout";
+
+
+div.admin_dashboard {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: flex-start;
+}
+
+div.admin_dash_item {
+	padding: 2ch;
+	margin: 2ch;
+	border: 3px solid $sp-accent;
+	border-radius: 7px;
+
+	background-color: $b1;
+	box-shadow: 0.3ch 0.3ch 0.7ch $b2;
+
+	h1 {
+		margin: 0;
+	}
+
+	hr {
+		width: 99.5%;
+	}
+}
+
+div.hosted_sounds_toolbox {
+	span.sound_element {
+		display: inline-flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+	}
+	h3 {
+		display: inline-block;
+		margin: 0.5ex 0;
+	}
+	span.spacer {
+		width: 5em;
+	}
+	a {
+		font-weight: bold;
+		display: inline-flex;
+		text-align: right;
+		text-decoration: none;
+		color: black;
+		border: 3px solid $accent-comp;
+		border-radius: 7px;
+		padding: 0.4ch;
+		justify-content: center;
+		align-items: center;
+		background-color: white;
+	}
+	a.get_html {
+		height: 2.3ch;
+		width: 3ch;
+	}
+	a.get_link {
+		width: 2.3ch;
+		height: 2.3ch;
+	}
+	svg.svg_icon {
+		display: block;
+		vertical-align: middle;
+		margin: auto;
+		fill: $b5;
+	}
+}
+
+div.invite_form {
+	input {
+		font-family: Poppins, sans-serif;
+		font-size: 90%;
+	}
+	input[type="text"] {
+		width: 95%;
+		padding: 0.3ch 0.5ch;
+		margin-bottom: 0.5ch;
+		border: $accent-comp 0.3ch solid;
+		border-radius: 0.5ch;
+	}
+	label {
+		padding-right: 1ch;
+	}
+	div.button {
+		text-align: center;
+		margin-top: 0.8ch;
+		margin-bottom: -0.4ch;
+
+		input[type="submit"] {
+			border-radius: 0.5ch;
+			border: $accent-comp 0.3ch solid;
+			transition: background-color 500ms;
+
+			&:hover {
+				cursor: pointer;
+				background-color: adjust-color($sp-accent, $alpha: -0.18);
+				transition: background-color 500ms;
+			}
+		}
+	}
+}

@@ -1,0 +1,178 @@
+@import "partials/variables";
+@import "partials/layout";
+@import "partials/page_fader";
+
+div.contentBlock {
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	align-content: space-around;
+	height: 100%;
+}
+
+/*positioning of login menu*/
+div.content {
+	display: flex;
+	min-height: 100vh;
+	justify-content: center;
+	align-items: center;
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+	margin-block-end: 0;
+	width: 100%;
+	font-family: 'Poppins', sans-serif;
+	background-color: transparent;
+
+	hr {
+		width: 90%;
+		margin: 1.25%;
+	}
+
+	input {
+		&.butt {
+			min-width: auto;
+			width: 25%;
+			padding: 5px 10px;
+			margin: 2.5%;
+			border-radius: 5px;
+			border: 1px solid #3F403F;
+			font-family: inherit;
+			font-size: 105%;
+			transition: all 500ms;
+
+			&:hover {
+				cursor: pointer;
+				background-color: $sp-accent;
+				color: white;
+				transition: all 500ms;
+			}
+		}
+
+		&.field {
+			width: 80%;
+			padding: 6px 10px;
+			margin: 1.5%;
+			border-radius: 5px;
+			border: 1px solid #3F403F;
+			font-family: inherit;
+			font-size: 105%;
+			/*height: calc(100vh * 0.04);*/
+
+			&:disabled {
+				background: #CCCCCC;
+				color: #202020;
+			}
+		}
+	}
+
+	:first-child input.field {
+		margin-top: 2.5%;
+	}
+}
+
+div.tabcontent.closed form input {
+	height: 0px;
+	overflow: hidden;
+	/*display: none;*/
+}
+
+div.tabcontent.open form input {
+	height: initial;
+	overflow: initial;
+	/*display: initial;*/
+}
+
+.login-tabs {
+	width: 50%;
+	max-width: 600px;
+	height: auto;
+	margin: auto;
+	transition: all 2s ease-in-out;
+}
+
+/* Style the tab */
+.tab {
+	overflow: hidden;
+	border-bottom: 1px solid #EAEAEA;
+	background-color: #BFBFBF;
+	display: flex;
+	justify-content: space-evenly;
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+
+	// Style the buttons that are used to open the tab content
+	button {
+		background-color: inherit;
+		float: left;
+		border: none;
+		border-top: #BFBFBF 1px solid;
+		border-bottom: $sp-accent 1px solid;
+		outline: none;
+		cursor: pointer;
+		padding: 14px 16px;
+		transition: all 200ms;
+		font-family: 'Poppins', sans-serif;
+		font-weight: bold;
+		font-size: 100%;
+		width: 25%;
+
+		// Change background color of buttons on hover
+		&:hover {
+			background-color: #aaa;
+			border-top: #aaa 3px solid;
+			border-bottom: $sp-accent 3px solid;
+		}
+
+		// Create an active/current tablink class
+		&.active {
+			background-color: #aaa;
+			border-top: #aaa 3px solid;
+			border-bottom: $sp-accent 3px solid;
+		}
+	}
+}
+
+// Style the tab content
+.tabcontentouter {
+	display: flex;
+	/*flex-direction: column;*/
+	padding: 5px 5px; /* old value : 6px 12px */
+	/*border: 1px solid #ccc;*/
+	border-top: none;
+	background: #746d6f;
+	border-bottom-left-radius: 15px;
+	border-bottom-right-radius: 15px;
+	/*animation: fadeEffect 1s; !* Fading effect takes 1 second *!*/
+	/*transition: flex 2s ease-in-out;*/
+	height: auto;
+}
+
+// Style the tab content
+.tabcontent {
+	overflow: hidden;
+	flex: 0;
+	transition: flex 500ms ease-in-out, height 500ms 500ms ease-in-out, margin 500ms ease-in-out;
+	border: 1px solid #746d6f;
+	display: flex;
+	justify-content: space-around;
+
+	&.open {
+		flex: 1;
+		height: auto;
+	}
+}
+
+/* Go from zero to full opacity */
+@keyframes fadeEffect {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}

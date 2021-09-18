@@ -1,0 +1,22 @@
+@import "partials/variables";
+@import "partials/layout";
+
+/* Landscape ish */
+@media (min-aspect-ratio: 3/2) {
+	.all-posts {
+		/*width: 100%;*/
+		min-width: 60%;
+		max-width: 100%;
+		text-align: center;
+	}
+}
+
+/* Portrait ish */
+@media (max-aspect-ratio: 3/2) {
+	.all-posts {
+		width: 99%;
+		/*min-width: 60%;*/
+		/*max-width: 100%;*/
+		text-align: center;
+	}
+}

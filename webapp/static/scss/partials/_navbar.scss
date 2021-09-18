@@ -1,0 +1,45 @@
+@import "variables";
+
+.navbar {
+	display: flex;
+	justify-content: center;
+	flex-direction: row;
+	max-height: 10vh;
+	flex-wrap: nowrap;
+	color: white;
+	background-color: #aaaaaa;
+	height: auto;
+	margin: auto;
+	z-index: 999999;
+
+	button {
+		background-color: inherit;
+		list-style-type: none;
+		border: none;
+		border-bottom: $sp-accent 1px solid;
+		outline: none;
+		cursor: pointer;
+		padding: 14px 16px;
+		margin: 0 2%;
+		transition: all 200ms;
+		font-family: 'Poppins', sans-serif;
+		font-weight: bold;
+		font-size: 120%;
+		/*width: 25%;*/
+
+		&:hover {
+			background-color: #999;
+			border-bottom: $sp-accent 3px solid;
+			/*padding-top: 11px;*/
+			padding-bottom: 12px;
+		}
+
+		&#active {
+			background-color: #a0a0a0;
+			border-bottom: $sp-accent 3px solid;
+			font-weight: bolder;
+			text-decoration: underline;
+			padding-bottom: 12px;
+		}
+	}
+}

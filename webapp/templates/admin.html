@@ -1,15 +1,57 @@
 {% extends "layout.html" %}
 {% block content %}
-	<form method="POST" action="">
-		{% for field in invite_form %}
-{#			{% if field.type != "CSRFTokenField" %}#}
-				{{ field | safe }}
-				{% if field.type in ["BooleanField"] %}
-					{{ field.label | safe }}
-				{% endif %}
+{#    <meta http-equiv="refresh" content="5"/>#}
+    <div class="admin_dashboard">
+        {# new user invite form #}
+        <div class="invite_form admin_dash_item">
+            <h1>Invite User</h1>
+            <hr>
+            <form method="POST" action="">
+                {% for field in invite_form %}
+                    {% if field.type != "SubmitField" %}
+                        {{ field | safe }}
+                        {% if field.type in ["BooleanField"] %}
+                            {{ field.label | safe }}
+                        {% endif %}
+                        {% if not loop.last %}
+                            <br>
+                        {% endif %}
+                    {% else %}
+                        <div class="button">
+                            {{ field | safe }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </form>
+        </div>
 
-{#			{% endif %}#}
-			<br>
-		{% endfor %}
-	</form>
+        {# toolbox for using hosted sound files #}
+        <div class="admin_dash_item hosted_sounds_toolbox">
+            <h1>Sounds Toolbox</h1>
+            <hr>
+            {% for sound in hosted_sounds %}
+                <span class="sound_element">
+                    <h3>{{ sound }}</h3>
+                    <span class="spacer"></span>
+                    <span>
+                        <a class="get_html" href="javascript:void(0)"
+                           onclick="navigator.clipboard.writeText(
+                                   '<audio src=' + String.fromCharCode(34) +
+                                   location.protocol + '//' + location.host + '/sounds/' + '{{ sound }}'
+                                   + String.fromCharCode(34) + '></audio>'
+                                   )">
+                        <svg class="svg_icon" viewBox="0 0 8 6">{{ svg("code") | safe }}</svg>
+                    </a>
+                    <a class="get_link" href="javascript:void(0)"
+                       onclick="navigator.clipboard.writeText(
+                               location.protocol + '//' + location.host + '/sounds/' + '{{ sound }}'
+                               )">
+                        <svg class="svg_icon" viewBox="0 0 8 8">{{ svg("link") | safe }}</svg>
+                    </a>
+                    </span>
+                </span>
+                <br>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock content %}

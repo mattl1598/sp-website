@@ -1,0 +1,131 @@
+@import "partials/variables";
+@import "partials/navbar";
+@import "partials/layout";
+@import "partials/page_fader";
+@import "partials/popup";
+
+.create-post {
+	margin-top: 1%;
+	min-width: 60%;
+	padding: 1.5%;
+	border: 3px solid $sp-accent;
+	border-radius: 10px;
+	background-color: $b0;
+	box-shadow: 0.3ch 0.3ch 0.7ch $b2;
+
+	display: inline-flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: nowrap;
+
+	h1 {
+		/*flex-shrink: 1;*/
+		/*width: 0;*/
+		/*max-width: 50%;*/
+	}
+}
+
+.buttons {
+	white-space: nowrap;
+	overflow: hidden;
+	display: inline-block;
+	flex-grow: 1;
+	text-align: right;
+	min-width: 40%;
+	max-width: 50%;
+	/*padding-right: 6.7%;*/
+
+	button {
+		font-family: 'Poppins', sans-serif;
+		font-weight: bold;
+		font-size: 110%;
+		padding: 2.5% 3.5%;
+		border: 3px solid $sp-accent;
+		border-radius: 5px;
+		cursor: pointer;
+		transition: filter 300ms;
+		width: fit-content;
+
+		&:hover {
+			filter: brightness(85%);
+		}
+
+		&#from-scratch {
+			background-color: $sp-accent;
+			color: white;
+			margin-left: 3%;
+		}
+
+		&#from-word {
+			border-color: $accent-comp;
+		}
+	}
+}
+
+.your-posts {
+	margin-top: 1%;
+	min-width: 60%;
+	padding: 1.5%;
+	border: 3px solid $sp-accent;
+	border-radius: 10px;
+	background-color: $b0; //adjust-color($b1, $alpha: -0.6);
+	box-shadow: 0.3ch 0.3ch 0.7ch $b2;
+}
+
+.sep {
+	padding-left: 2em;
+}
+
+.views {
+	display: inline;
+	float: right;
+	margin-right: 0.75em;
+
+	svg {
+		position: relative;
+		top: 0.2em;
+		height: 1.2em;
+		margin: auto;
+	}
+}
+
+h1 {
+	margin: 0;
+}
+
+form#dropArea {
+	color: white;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+
+	label u {
+		cursor: pointer;
+		text-underline: white;
+	}
+}
+
+.upload_button {
+	font-family: 'Poppins', sans-serif;
+	font-weight: bold;
+	font-size: 110%;
+	padding: 2.5% 3.5%;
+	border: 3px solid $accent-comp;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: filter 300ms;
+	width: fit-content;
+	text-align: center;
+	align-self: center;
+}
+
+.highlight {
+	border-color: #00ffff !important;
+}
+
+.hidden_flex {
+	display: none;
+}
