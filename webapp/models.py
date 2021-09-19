@@ -5,6 +5,15 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
 
+class RadioPlayViewCounts(db.Model):
+	id = db.Column(db.String(16), primary_key=True)
+	show_id = db.Column(db.String(16), db.ForeignKey('show.id'))
+	timestamp = db.Column(db.DateTime)
+	ip_address = db.Column(db.String(16))
+	user_agent = db.Column(db.Text)
+	increment_value = db.Column(db.Integer)
+
+
 class Show(db.Model):
 	id = db.Column(db.String(16), primary_key=True)
 	year = db.Column(db.Integer)

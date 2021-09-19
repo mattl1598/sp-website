@@ -1,12 +1,13 @@
+import json
 from pprint import pprint
 import corha.corha as corha
 import dotmap
-from webapp import app, db, socketio, debug
+from webapp import app, db, socketio, debug, key_64
 from flask import request, make_response, abort, render_template, redirect, url_for, session, send_file, \
 	send_from_directory
 from flask_login import login_user, logout_user, current_user, login_required
 from webapp.forms import LoginForm, Register, InviteForm, FeedbackForm
-from webapp.models import User, Invite, BlogPost, BlogImage, Feedback, Show
+from webapp.models import User, Invite, BlogPost, BlogImage, Feedback, Show, RadioPlayViewCounts as RPVC
 from datetime import datetime
 from flask_socketio import emit, join_room
 from webapp.navbar import gen_nav
@@ -32,6 +33,29 @@ def sound(filename):
 		debug("found")
 		response = send_from_directory(app.sounds_path, filename)
 		return response
+
+
+@app.post("/sounds_counter")
+def sounds_counter():
+	listen_ids = RPVC.query.with_entities(RPVC.id).all()
+	new_id = key_64(16)
+	while (new_id,) in listen_ids:
+		new_id = key_64(16)
+
+	new_listen = RPVC(
+		id=new_id,
+		show_id=request.json["show_id"],
+		timestamp=datetime.utcnow(),
+		ip_address=request.environ['REMOTE_ADDR'],
+		user_agent=request.json["user_agent"],
+		increment_value=1
+	)
+
+	db.session.add(new_listen)
+	db.session.commit()
+
+	return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+
 
 
 @login_required
@@ -175,7 +199,9 @@ def test():
 	# db.session.add(new_show)
 	# db.session.commit()
 
-	return render_template("test.html", css="test.css", js=[])
+
+
+	return render_template("test.html", css="test.css", js=["test.js"])
 
 
 @app.route("/login", methods=["GET", "POST"])

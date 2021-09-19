@@ -120,5 +120,5 @@ app.jinja_env.globals.update(
 	range=range
 )
 
-from webapp import models
-db.create_all()
+# from webapp import models
+# db.create_all()
