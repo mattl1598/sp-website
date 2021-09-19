@@ -4,6 +4,7 @@ import corha
 import os
 import datetime
 from flask import Flask
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 import markdown
@@ -19,6 +20,12 @@ print(app.root)
 app.envs = corha.credentials_loader(app.root + "/.env")
 
 app.static_content_cache = {"js": {}, "css": {}}
+
+cors = CORS(app, resources={
+	r"/sounds/*": {"origins": ["http://silchesterplayers.org", "https://silchesterplayers.org"]},
+	r"/sounds_counter": {"origins": ["http://silchesterplayers.org", "https://silchesterplayers.org"]}
+}
+)
 
 # get available sounds
 app.sounds_path = "static/sounds/"
