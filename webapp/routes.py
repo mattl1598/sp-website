@@ -46,7 +46,7 @@ def sounds_counter():
 		id=new_id,
 		show_id=request.json["show_id"],
 		timestamp=datetime.utcnow(),
-		ip_address=request.environ['REMOTE_ADDR'],
+		ip_address=request.headers.get('CF-Connecting-IP'),
 		user_agent=request.json["user_agent"],
 		increment_value=1
 	)
