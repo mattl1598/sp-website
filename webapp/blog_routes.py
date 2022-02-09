@@ -30,7 +30,7 @@ def blog():
 			"post.html",
 			post=post,
 			author=author,
-			css=["back.css", "post.css"],
+			css="post.css",
 			js=[]
 		)
 	else:
